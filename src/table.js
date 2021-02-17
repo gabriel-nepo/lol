@@ -80,7 +80,7 @@ export default function BasicTable(props) {
                         {
                             data.length !== 0 ?
                                 data.participants.map((row, index) => {
-                                    const color = (index < 5) ? "#c72c3a" : "rgb(52,152,219)"
+                                    const color = (index > 5) ? "#c72c3a" : "rgb(52,152,219)"
 
                                     return <TableRow style={{ backgroundColor: color }} key={index}>
                                         <TableCell style={{ color: "white" }} component="th" scope="row">
