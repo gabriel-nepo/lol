@@ -8,6 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Button } from '@material-ui/core';
+import Icon from '@material-ui/core/Icon';
 
 const useStyles = makeStyles({
     table: {
@@ -30,6 +31,11 @@ export default function BasicTable(props) {
     console.log(props.match);
     const [data, setData] = React.useState([]);
 
+    const [blueKills, setBlueKills] = React.useState(0);
+    const [redKills, setRedKills] = React.useState(0);
+
+
+
     const getData = async (date) => {
         if (props.match !== '') {
             let date = new Date();
@@ -39,8 +45,23 @@ export default function BasicTable(props) {
             date2 = date2.replaceAt(18, '0');
 
             const data = await fetch(`https://feed.lolesports.com/livestats/v1/details/${props.match}?startingTime=${date2}`);
+
+
             const resp = await data.json();
             console.log(resp);
+            const participants = resp.frames[resp.frames.length - 1].participants;
+            let blue = 0;
+            let red = 0;
+            participants.map((element, index) => {
+                if (index < 5) {
+                    blue += element.kills;
+                }
+                else {
+                    red += element.kills;
+                }
+            })
+            setBlueKills(blue);
+            setRedKills(red);
             setData(resp.frames[resp.frames.length - 1]);
             console.log(date)
         }
@@ -59,14 +80,20 @@ export default function BasicTable(props) {
     console.log(data);
     return (
         <>
-            <Button style={{ height: 50, marginTop: 2, marginLeft: 10, backgroundColor: "pink" }} variant="contained" color="secondary" onClick={() => getData()}>
-                Atualizar
-            </Button>
+            <div style={{ display: "flex", alignItems: "center" }}>
+                <h1>{blueKills} x {redKills}</h1>
+                <Button style={{ height: 50, marginTop: 2, marginLeft: 10, backgroundColor: "pink" }} variant="contained" color="secondary" onClick={() => getData()}>
+                    Atualizar
+                </Button>
+
+            </div>
+
+
             <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>ID Jogador</TableCell>
+                            <TableCell>Posição</TableCell>
                             <TableCell align="right">Level</TableCell>
                             <TableCell align="right">Eliminações</TableCell>
                             <TableCell align="right">Mortes</TableCell>
@@ -80,11 +107,25 @@ export default function BasicTable(props) {
                         {
                             data.length !== 0 ?
                                 data.participants.map((row, index) => {
-                                    const color = (index > 5) ? "#c72c3a" : "rgb(52,152,219)"
+                                    const color = (index >= 5) ? "#c72c3a" : "rgb(52,152,219)"
 
                                     return <TableRow style={{ backgroundColor: color }} key={index}>
                                         <TableCell style={{ color: "white" }} component="th" scope="row">
-                                            {row.participantId}
+
+                                            <Icon>
+                                                {index === 0 || index === 5 ?
+                                                    <img height={20} alt="icone_form" className={classes.imageIcon} src={"https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-top.png"} />
+                                                    : index === 1 || index === 6 ?
+                                                        <img height={20} alt="icone_form" className={classes.imageIcon} src={"https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-jungle.png"} />
+                                                        : index === 2 || index === 7 ?
+                                                            <img height={20} alt="icone_form" className={classes.imageIcon} src={"https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-middle.png"} />
+                                                            : index === 3 || index === 8 ?
+                                                                <img height={20} alt="icone_form" className={classes.imageIcon} src={"https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-bottom.png"} />
+                                                                : index === 4 || index === 9 ?
+                                                                    <img height={20} alt="icone_form" className={classes.imageIcon} src={"https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-utility.png"} />
+                                                                    : null
+                                                }
+                                            </Icon>
                                         </TableCell>
                                         <TableCell style={{ color: "white" }} align="right">{row.level}</TableCell>
                                         <TableCell style={{ color: "white" }} align="right">{row.kills}</TableCell>
