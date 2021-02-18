@@ -30,9 +30,11 @@ export default function BasicTable(props) {
     const classes = useStyles();
     console.log(props.match);
     const [data, setData] = React.useState([]);
-
+    const [participants, setParticipants] = React.useState([]);
     const [blueKills, setBlueKills] = React.useState(0);
     const [redKills, setRedKills] = React.useState(0);
+    const [blueGold, setBlueGold] = React.useState(0);
+    const [redGold, setRedGold] = React.useState(0);
 
 
 
@@ -46,24 +48,28 @@ export default function BasicTable(props) {
 
             const data = await fetch(`https://feed.lolesports.com/livestats/v1/details/${props.match}?startingTime=${date2}`);
 
-
-            const resp = await data.json();
-            console.log(resp);
-            const participants = resp.frames[resp.frames.length - 1].participants;
+            const wind = await fetch(`https://feed.lolesports.com/livestats/v1/window/${props.match}?startingTime=${date2}`)
+            const resp = await wind.json();
+            console.log(resp.frames[resp.frames.length - 1]);
+            const frame = resp.frames[resp.frames.length - 1];
             let blue = 0;
             let red = 0;
-            participants.map((element, index) => {
-                if (index < 5) {
-                    blue += element.kills;
-                }
-                else {
-                    red += element.kills;
-                }
-            })
-            setBlueKills(blue);
-            setRedKills(red);
-            setData(resp.frames[resp.frames.length - 1]);
-            console.log(date)
+            let blueG = 0;
+            let redG = 0;
+            // participants.map((element, index) => {
+            //     if (index < 5) {
+            //         blue += element.kills;
+            //         blueG += element.totalGoldEarned;
+            //     }
+            //     else {
+            //         red += element.kills;
+            //         redG += element.totalGoldEarned;
+            //     }
+            // })
+            setData(frame);
+            console.log(frame)
+            const part = [...frame.blueTeam.participants, ...frame.redTeam.participants]
+            setParticipants(part);
         }
 
 
@@ -80,13 +86,28 @@ export default function BasicTable(props) {
     console.log(data);
     return (
         <>
-            <div style={{ display: "flex", alignItems: "center" }}>
-                <h1>{blueKills} x {redKills}</h1>
-                <Button style={{ height: 50, marginTop: 2, marginLeft: 10, backgroundColor: "pink" }} variant="contained" color="secondary" onClick={() => getData()}>
-                    Atualizar
-                </Button>
+            {data !== [] ?
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <h1>Score: {data.blueTeam.totalKills + " x " + data.redTeam.totalKills}</h1>
+                    <h1>Gold: {data.blueTeam.totalGold + " x " + data.redTeam.totalGold}</h1>
+                    <h1>Dragões: {data.blueTeam.dragons.length + ' x ' + data.redTeam.dragons.length}</h1>
+                    <h1>Barões: {data.blueTeam.barons + ' x ' + data.redTeam.barons}</h1>
+                    <h1>Torres: {data.blueTeam.towers + ' x ' + data.redTeam.towers}</h1>
+                    <h1>Inibidores: {data.blueTeam.inhibitors + " x " + data.redTeam.inhibitors}</h1>
+                    <Button style={{ height: 50, marginTop: 2, marginLeft: 10, backgroundColor: "pink" }} variant="contained" color="secondary" onClick={() => getData()}>
+                        Atualizar
+                    </Button>
 
-            </div>
+                </div>
+                :
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+
+                    <Button style={{ height: 50, marginTop: 2, marginLeft: 10, backgroundColor: "pink" }} variant="contained" color="secondary" onClick={() => getData()}>
+                        Atualizar
+                    </Button>
+
+                </div>
+            }
 
 
             <TableContainer component={Paper}>
@@ -105,8 +126,8 @@ export default function BasicTable(props) {
                     </TableHead>
                     <TableBody>
                         {
-                            data.length !== 0 ?
-                                data.participants.map((row, index) => {
+                            participants.length !== 0 ?
+                                participants.map((row, index) => {
                                     const color = (index >= 5) ? "#c72c3a" : "rgb(52,152,219)"
 
                                     return <TableRow style={{ backgroundColor: color }} key={index}>
