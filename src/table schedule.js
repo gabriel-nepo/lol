@@ -60,7 +60,7 @@ export default function ScheduleTable() {
                                 let x = row.match.id;
                                 return <TableRow key={index}>
                                     <TableCell>
-                                        {x.replaceAt(x.length-1,String(String(Number(Number(x[x.length-1])+1))))}
+                                        {x}
                                     </TableCell>
                                     <TableCell>{row.match.teams[0].code+" vs "+row.match.teams[1].code}</TableCell>
                                 </TableRow>
