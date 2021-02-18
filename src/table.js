@@ -29,7 +29,7 @@ String.prototype.replaceAt = function (index, replacement) {
 export default function BasicTable(props) {
     const classes = useStyles();
     console.log(props.match);
-    const [data, setData] = React.useState([]);
+    const [data, setData] = React.useState(undefined);
     const [participants, setParticipants] = React.useState([]);
     const [blueKills, setBlueKills] = React.useState(0);
     const [redKills, setRedKills] = React.useState(0);
@@ -86,27 +86,27 @@ export default function BasicTable(props) {
     console.log(data);
     return (
         <>
-            {data !== [] ?
+            {data?
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <h1>Score: {data.blueTeam.totalKills + " x " + data.redTeam.totalKills}</h1>
-                    <h1>Gold: {data.blueTeam.totalGold + " x " + data.redTeam.totalGold}</h1>
-                    <h1>Dragões: {data.blueTeam.dragons.length + ' x ' + data.redTeam.dragons.length}</h1>
-                    <h1>Barões: {data.blueTeam.barons + ' x ' + data.redTeam.barons}</h1>
-                    <h1>Torres: {data.blueTeam.towers + ' x ' + data.redTeam.towers}</h1>
-                    <h1>Inibidores: {data.blueTeam.inhibitors + " x " + data.redTeam.inhibitors}</h1>
+                    <h1>Score: {data !== [] ? data.blueTeam.totalKills + " x " + data.redTeam.totalKills : "0x0"}</h1>
+                    <h1>Gold: {data !== [] ? data.blueTeam.totalGold + " x " + data.redTeam.totalGold : "0x0"}</h1>
+                    <h1>Dragões: {data !== [] ? data.blueTeam.dragons.length + ' x ' + data.redTeam.dragons.length : "0 x 0"}</h1>
+                    <h1>Barões: {data !== [] ? data.blueTeam.barons + ' x ' + data.redTeam.barons : "0 x 0"}</h1>
+                    <h1>Torres: {data !== [] ? data.blueTeam.towers + ' x ' + data.redTeam.towers : "0 x 0"}</h1>
+                    <h1>Inibidores: {data !== [] ? data.blueTeam.inhibitors + " x " + data.redTeam.inhibitors : "0 x 0"}</h1>
                     <Button style={{ height: 50, marginTop: 2, marginLeft: 10, backgroundColor: "pink" }} variant="contained" color="secondary" onClick={() => getData()}>
                         Atualizar
                     </Button>
 
                 </div>
                 :
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
 
-                    <Button style={{ height: 50, marginTop: 2, marginLeft: 10, backgroundColor: "pink" }} variant="contained" color="secondary" onClick={() => getData()}>
-                        Atualizar
-                    </Button>
+                <Button style={{ height: 50, marginTop: 2, marginLeft: 10, backgroundColor: "pink" }} variant="contained" color="secondary" onClick={() => getData()}>
+                    Atualizar
+                </Button>
 
-                </div>
+            </div>
             }
 
 
