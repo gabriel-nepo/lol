@@ -21,7 +21,7 @@ export default function ScheduleTable() {
     const [data, setData] = React.useState([]);
     const getData = async () => {
 
-        const data = await fetch('https://prod-relapi.ewp.gg/persisted/gw/getSchedule?hl=en-US&leagueId=98767991332355509', {
+        const data = await fetch('https://prod-relapi.ewp.gg/persisted/gw/getSchedule?hl=en-US', {
             headers: {
                 'x-api-key': '0TvQnueqKa5mxJntVWt0w4LpLfEkrV1Ta8rQBb9Z'
             }
